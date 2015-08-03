@@ -2,6 +2,9 @@
 logs
 *.log
 
+#ignore personal server config
+server-config.json
+
 # Runtime data
 pids
 *.pid

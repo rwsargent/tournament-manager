@@ -10,11 +10,11 @@ router.get('/', function(req, res, next) {
 
 router.get('/matches', function(req, res) {
     var matches = challonge.matches.index(global.serverConfig.tournaments[0]);
-    res.send(matches);
+    res.json(matches);
 });
 
 router.get('/queue', function(req, res) {
-    var q = Queue.find({}, function(err, queue) {
+    var q = Queue.find({}).sort({order : 1 }).exec( function(err, queue) {
         if (err) throw err;
         res.json(queue);
     });

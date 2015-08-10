@@ -7,6 +7,8 @@ server-config.json
 
 #emacs saved files
 *~
+.node-xmlhttprequest-*
+
 
 # Runtime data
 pids

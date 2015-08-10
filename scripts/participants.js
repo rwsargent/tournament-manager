@@ -9,7 +9,7 @@ exports.create = function(tournament, name, params) {
     return api.fetch_and_parse("POST", "tournaments/" + tournament + "/participant", params);
 };
 
-exports.show = function(tournamentID, participantID) { 
+exports.show = function(tournamentID, participantID, params) { 
     return api.fetch_and_parse("GET", "tournaments/" + tournamentID + "/participants/ " + participantID, "participant", params);
 };
 

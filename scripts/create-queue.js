@@ -4,7 +4,7 @@ var challonge = require("./challonge.js");
 var buildQueue = function() {
     // get all the matches from all the tournaments
     var tournaments = [];
-    var roundMap = [];
+    var roundMapWinner = [], roundMapLoser = [];
     for(tourneyIdx in global.serverConfig.tournaments) {
         tournaments.push(challonge.matches.index(global.serverConfig.tournaments[tourneyIdx])); // grabs the match list from challonge
     }
@@ -12,63 +12,83 @@ var buildQueue = function() {
     var finished = false, matchIndex = 0;
     
     while(!finished) {
-	finished = true;
+	    finished = true;
         for(var tournamentIndex = 0; tournamentIndex < tournaments.length; tournamentIndex++) { //look at every tournament
-	    var match = tournaments[tournamentIndex][matchIndex];
-	    if (!match) {
-		continue;
-	    } else {
-		match = match.match
+	        var match = tournaments[tournamentIndex][matchIndex];
+	        if (!match) {
+		        continue;
+	        } else {
+		        match = match.match
+	        }
+	        finished = false;
+            var round = match.round;
+            var map = roundMapWinner;
+            if (round < 0 ) { // if we are getting a negative round, then we know it's a loser's bracket
+	            round = Math.abs(match.round);
+                map = roundMapLoser;
+            }
+	        if (!map[round]) {
+		        map[round] = [];
+	        }
+	        map[round].push(match);
 	    }
-	    finished = false;
-	    var round = Math.abs(match.round);
-	    if (!roundMap[round]) {
-		roundMap[round] = [];
-	    }
-	    roundMap[round].push(match);
-	}
-	matchIndex++;
+	    matchIndex++;
     }
-    // chop off zeroth element of roundMap
-    roundMap.splice(0, 1);
+    // chop off zeroth element of the maps
+    roundMapWinner.splice(0, 1);
+    roundMapLoser.splice(0, 1);
 
-    var order = 1, queue = [];
-    for (roundIdx in roundMap) {
-	roundMap[roundIdx].sort(function(left, right) {
-	    return right.round - left.round;
-	});
- 	for(matchIdx in roundMap[roundIdx]) {
-	    match = roundMap[roundIdx][matchIdx];
-	    var queueObject = Queue( {
-                player1Display : match.player1 || "TBD",
-                player2Display : match.player2 || "TBD",
-                challongeMatchID : match.id,
-		challongeIdentifier : match.identifier,
-		order : order++
-	    });
-	    queue.push(queueObject);
-	}
+    var queue = [];
+    // do all the winner/loser matches up to winners semi
+    var roundIndex = 0;
+    for (roundIndex = 0; roundIndex < roundMapWinner.length-1; roundIndex++) {
+        addToQueue(roundMapWinner, roundIndex, queue);
+        addToQueue(roundMapLoser, roundIndex, queue);
+    }
+    
+    // finish out loser bracket
+    for( ;roundIndex < roundMapLoser.length; roundMapLoser++) {
+        addToQueue(roundMapLoser, roundIndex, queue);
     }
 
+    // finish out winner bracket
+    addToQueue(roundMapWinner, roundMapWinner.length -1, queue);
+    
     for (queueIdx in queue) {
     	model = queue[queueIdx];
     	model.save(function(err) {
     	    if (err) {
-		throw err;
+		        throw err;
     	    } else {
-		console.log("Saved successfully");
-	    }
+		        console.log("Queue object created and saved");
+	        }
     	})
     }
-
-    /*
-    Queue.collection.insert(queue, {}, function(err) {
-	if(err) throw err;
-	else {
-	    console.log("Done building Queue");
-	}
-    }*/
 }
+
+var addToQueue = function(roundMap, roundIdx, queue) {
+ 	for(matchIdx in roundMap[roundIdx]) {
+	    match = roundMap[roundIdx][matchIdx];
+        queueObject = createQueueObject(match, queue.length + 1);
+	    queue.push(queueObject);
+	}
+};
+
+var createQueueObject = function(match, order) {
+    var p1display = challonge.participants.show(match.tournament_id, match.player1_id).participant;
+    var p2display = challonge.participants.show(match.tournament_id, match.player2_id).participant;
+    p1display = p1display ? p1display.name : "TBD"
+    p2display = p2display ? p2display.name : "TBD"
+    var queueObject = Queue( {
+        player1Display : p1display,
+        player2Display : p2display,
+        challongeMatchID : match.id,
+		challongeIdentifier : match.identifier,
+		order : order
+	});
+    return queueObject;
+};
+
 
 module.exports = function() {
     Queue.find({}, function(err, queue) {

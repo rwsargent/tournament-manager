@@ -6,7 +6,9 @@ var queueSchema = new Schema({
     player2Display : String,
     player1Challonge : String,
     player2Challonge : String,
-    challongeMatchID : String
+    challongeMatchID : Number,
+    challongeIdentifier : String,
+    order: Number
 });
 
 module.exports = mongoose.model('Queue', queueSchema);

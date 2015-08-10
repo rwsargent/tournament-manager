@@ -23,7 +23,7 @@ exports.fetch = function(method, uri, params_prefix, params) {
     var string = "super long string that deosn't really matter whatup";
     var urlParams = "";
     if (typeof params !== 'undefined') { 
-	    urlParams = "?" + paramify(param_prefix, params);
+	    urlParams = "?" + paramify(params_prefix, params);
     }
     var url = "https://api.challonge.com/v1/" + uri + ".json";
     if (method === "GET") {
@@ -47,7 +47,6 @@ exports.fetch = function(method, uri, params_prefix, params) {
 
 exports.fetch_and_parse = function(method, uri, params_prefix, params)  { 
     response = exports.fetch(method, uri, params_prefix, params);
-    console.log('do we get here?');
     return JSON.parse(response);
 };
 

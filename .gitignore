@@ -5,6 +5,9 @@ logs
 #ignore personal server config
 server-config.json
 
+#emacs saved files
+*~
+
 # Runtime data
 pids
 *.pid

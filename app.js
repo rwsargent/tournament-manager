@@ -15,9 +15,9 @@ global.serverConfig = JSON.parse(config_string);
 mongoose.connect(global.serverConfig.mongodb_location, function(err, success) {
     if (err) {
         console.log(err);
+	throw err;
     } else {
         console.log("successfully connected to the database");
-        
     }
 });
 
@@ -33,6 +33,10 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
+// see if we can make json prettier
+app.set('json spaces', 2);
+//app.set('json replacer', replacer);
  
 // uncomment after placing oyur favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));

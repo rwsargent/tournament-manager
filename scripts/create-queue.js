@@ -12,27 +12,26 @@ var buildQueue = function() {
     var finished = false, matchIndex = 0;
     
     while(!finished) {
-	    finished = true;
+	finished = true;
         for(var tournamentIndex = 0; tournamentIndex < tournaments.length; tournamentIndex++) { //look at every tournament
-	        var match = tournaments[tournamentIndex][matchIndex];
-	        if (!match) {
-		        continue;
-	        } else {
-		        match = match.match
-	        }
-	        finished = false;
+	    var match = tournaments[tournamentIndex][matchIndex];
+	    if (!match) {
+		continue;
+	    }
+	    match = match.match
+	    finished = false;
             var round = match.round;
             var map = roundMapWinner;
             if (round < 0 ) { // if we are getting a negative round, then we know it's a loser's bracket
-	            round = Math.abs(match.round);
+	        round = Math.abs(match.round);
                 map = roundMapLoser;
             }
-	        if (!map[round]) {
-		        map[round] = [];
-	        }
-	        map[round].push(match);
+	    if (!map[round]) {
+		map[round] = [];
 	    }
-	    matchIndex++;
+	    map[round].push(match);
+	}
+	matchIndex++;
     }
     // chop off zeroth element of the maps
     roundMapWinner.splice(0, 1);
@@ -47,7 +46,7 @@ var buildQueue = function() {
     }
     
     // finish out loser bracket
-    for( ;roundIndex < roundMapLoser.length; roundMapLoser++) {
+    for( ;roundIndex < roundMapLoser.length; roundIndex++) {
         addToQueue(roundMapLoser, roundIndex, queue);
     }
 
@@ -58,20 +57,20 @@ var buildQueue = function() {
     	model = queue[queueIdx];
     	model.save(function(err) {
     	    if (err) {
-		        throw err;
+		throw err;
     	    } else {
-		        console.log("Queue object created and saved");
-	        }
+		console.log("Queue object created and saved");
+	    }
     	})
     }
 }
 
 var addToQueue = function(roundMap, roundIdx, queue) {
- 	for(matchIdx in roundMap[roundIdx]) {
-	    match = roundMap[roundIdx][matchIdx];
+    for(matchIdx in roundMap[roundIdx]) {
+	match = roundMap[roundIdx][matchIdx];
         queueObject = createQueueObject(match, queue.length + 1);
-	    queue.push(queueObject);
-	}
+	queue.push(queueObject);
+    }
 };
 
 var createQueueObject = function(match, order) {
@@ -83,9 +82,9 @@ var createQueueObject = function(match, order) {
         player1Display : p1display,
         player2Display : p2display,
         challongeMatchID : match.id,
-		challongeIdentifier : match.identifier,
-		order : order
-	});
+	challongeIdentifier : match.identifier,
+	order : order
+    });
     return queueObject;
 };
 

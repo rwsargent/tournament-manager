@@ -10,7 +10,19 @@ router.get('/', function(req, res, next) {
 
 router.get('/matches', function(req, res) {
     var matches = challonge.matches.index(global.serverConfig.tournaments[0]);
-    res.json(matches);
+    var trimmedMatches = [];
+    for (matchIdx in matches) {
+	var match = matches[matchIdx].match;
+	var trimmedMatch = { 
+	    id : match.id,
+	    round: match.round,
+	    player1_id: match.player1_id,
+	    player2_id: match.player2_id,
+	    identifier : match.identifier
+	};
+	trimmedMatches.push(trimmedMatch);
+    }
+    res.json(trimmedMatches);
 });
 
 router.get('/queue', function(req, res) {

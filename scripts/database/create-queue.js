@@ -1,37 +1,41 @@
 var Queue = require("./../models/queue");
-var challonge = require("./challonge.js");
+var challonge = require("./../challonge/challonge.js");
 
 var buildQueue = function() {
     // get all the matches from all the tournaments
     var tournaments = [];
+    var participants = [];
     var roundMapWinner = [], roundMapLoser = [];
     for(tourneyIdx in global.serverConfig.tournaments) {
-        tournaments.push(challonge.matches.index(global.serverConfig.tournaments[tourneyIdx])); // grabs the match list from challonge
+        var tourneyName = global.serverConfig.tournaments[tourneyIdx];
+        tournaments.push(challonge.matches.index(tourneyName)); // grabs the match list from challonge
+        participants.push(challonge.participants.index(tourneyName)); // grabs all participants 
+
     }
 
     var finished = false, matchIndex = 0;
     
     while(!finished) {
-	finished = true;
+	    finished = true;
         for(var tournamentIndex = 0; tournamentIndex < tournaments.length; tournamentIndex++) { //look at every tournament
-	    var match = tournaments[tournamentIndex][matchIndex];
-	    if (!match) {
-		continue;
-	    }
-	    match = match.match
-	    finished = false;
+	        var match = tournaments[tournamentIndex][matchIndex];
+	        if (!match) {
+		        continue;
+	        }
+	        match = match.match
+	        finished = false;
             var round = match.round;
             var map = roundMapWinner;
             if (round < 0 ) { // if we are getting a negative round, then we know it's a loser's bracket
-	        round = Math.abs(match.round);
+	            round = Math.abs(match.round);
                 map = roundMapLoser;
             }
-	    if (!map[round]) {
-		map[round] = [];
+	        if (!map[round]) {
+		        map[round] = [];
+	        }
+	        map[round].push(match);
 	    }
-	    map[round].push(match);
-	}
-	matchIndex++;
+	    matchIndex++;
     }
     // chop off zeroth element of the maps
     roundMapWinner.splice(0, 1);
@@ -57,19 +61,19 @@ var buildQueue = function() {
     	model = queue[queueIdx];
     	model.save(function(err) {
     	    if (err) {
-		throw err;
+		        throw err;
     	    } else {
-		console.log("Queue object created and saved");
-	    }
+		        console.log("Queue object created and saved");
+	        }
     	})
     }
 }
 
 var addToQueue = function(roundMap, roundIdx, queue) {
     for(matchIdx in roundMap[roundIdx]) {
-	match = roundMap[roundIdx][matchIdx];
+	    match = roundMap[roundIdx][matchIdx];
         queueObject = createQueueObject(match, queue.length + 1);
-	queue.push(queueObject);
+	    queue.push(queueObject);
     }
 };
 
@@ -82,8 +86,8 @@ var createQueueObject = function(match, order) {
         player1Display : p1display,
         player2Display : p2display,
         challongeMatchID : match.id,
-	challongeIdentifier : match.identifier,
-	order : order
+	    challongeIdentifier : match.identifier,
+	    order : order
     });
     return queueObject;
 };

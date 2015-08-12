@@ -22,7 +22,7 @@ mongoose.connect(global.serverConfig.mongodb_location, function(err, success) {
 });
 
 // Build the queue
-require('./scripts/create-queue.js')();
+require('./scripts/database/create-queue.js')();
 
 // Build the currently playing
 

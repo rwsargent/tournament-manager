@@ -1,4 +1,4 @@
-var Queue = require("./../models/queue");
+var Queue = require("./../../models/queue");
 var challonge = require("./../challonge/challonge.js");
 
 var buildQueue = function() {

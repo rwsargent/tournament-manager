@@ -8,9 +8,11 @@ var buildQueue = function() {
     var roundMapWinner = [], roundMapLoser = [];
     for(tourneyIdx in global.serverConfig.tournaments) {
         var tourneyName = global.serverConfig.tournaments[tourneyIdx];
-        tournaments.push(challonge.matches.index(tourneyName)); // grabs the match list from challonge
-        participants.push(challonge.participants.index(tourneyName)); // grabs all participants 
-
+	var tournament = challonge.matches.index(tourneyName);
+	var tournamentId = tournament[0].tournament_id;
+        tournaments.push(tournament); // grabs the match list from challonge
+	var participant = challonge.participants.index(tournamentId); 
+        participants.push(); // grabs all participants 
     }
 
     var finished = false, matchIndex = 0;

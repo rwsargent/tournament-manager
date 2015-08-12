@@ -38,6 +38,7 @@ router.get('/tournament/index', function(req, res) {
         var tourneyName = global.serverConfig.tournaments[tIdx];
         tournaments[tourneyName] = challonge.matches.index(tourneyName); // grabs the match list from challonge 
     }
+    res.json(tournaments);
 });
 
 module.exports = router;

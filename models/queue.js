@@ -11,4 +11,4 @@ var queueSchema = new Schema({
     order: Number
 });
 
-module.exports = mongoose.model('Queue', queueSchema);
+module.exports = mongoose.model('queue', queueSchema);

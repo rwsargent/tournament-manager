@@ -15,8 +15,9 @@ global.serverConfig = JSON.parse(config_string);
 mongoose.connect(global.serverConfig.mongodb_location, function(err, success) {
     if (err) {
         console.log(err);
-	throw err;
+        throw err;
     } else {
+        require("./scripts/database/init-db.js");
         console.log("successfully connected to the database");
     }
 });

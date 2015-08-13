@@ -8,7 +8,7 @@ var matchSchema = new Schema({
     player2Challonge : String,
     challongeMatchID : Number,
     challongeIdentifier : String,
-    order: Number
+    round: Number
 });
 
 module.exports = mongoose.model('match', matchSchema);

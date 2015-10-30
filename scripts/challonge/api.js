@@ -1,10 +1,11 @@
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var encoder = require('urlencode');
 var S = require('string');
+var config = require('./../../modules/configuration.js');
 
 var credentials = {
-    'user' : global.serverConfig.challonge_user,// 'rwsargentTest',
-    'api_key' : global.serverConfig.challonge_apikey//'pKHvsX1X8I14f1NDCyTD26jHmKrUuEavVUKcTWOs'
+    'user' : config.challonge_user,// 'rwsargentTest',
+    'api_key' : config.challonge_apikey//'pKHvsX1X8I14f1NDCyTD26jHmKrUuEavVUKcTWOs'
 };
 
 exports.setCredentials = function(username, api_key) { 

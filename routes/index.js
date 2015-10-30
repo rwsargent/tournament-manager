@@ -5,7 +5,22 @@ var Queue = require('../models/queue.js');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    res.render('index', { title: 'Express' });
+    res.render('index', { title: 'Express', author: 'Ryan and Ben ROCKS' });
+});
+
+router.get('/:event/:tournament/matches', function(req, res) {
+    var test = {
+        event : req.params.event,
+        tournament : req.params.tournament
+    };
+    res.json(test);
+});
+
+router.get('/:tournament', function(req, res) {
+    var test = {
+         tournament : req.params.tournament
+    };
+    res.json(test);
 });
 
 router.get('/matches', function(req, res) {

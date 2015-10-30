@@ -5,14 +5,13 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var fs = require('fs');
 
 // Set up server
 var setupFailed = false;
 
-var config_string = fs.readFileSync(path.join(__dirname, 'server-config.json'));
-global.serverConfig = JSON.parse(config_string);
-mongoose.connect(global.serverConfig.mongodb_location, function(err, success) {
+/*var config = ('./modules/configuration')();
+
+mongoose.connect(config.mongodb_location, function(err, success) 
     if (err) {
         console.log(err);
         throw err;
@@ -23,9 +22,7 @@ mongoose.connect(global.serverConfig.mongodb_location, function(err, success) {
 });
 
 // Build the queue
-require('./scripts/database/create-queue.js')();
-
-// Build the currently playing
+require('./scripts/database/create-queue.js')();*/
 
 var routes = require('./routes/index');
 var users = require('./routes/users');

@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var matchSchema = new Schema({
+    player1 : Object
     player1Display : String,
     player2Display : String,
     player1Challonge : String,

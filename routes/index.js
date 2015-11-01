@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var challonge = require('../scripts/challonge/challonge.js');
 var Queue = require('../models/queue.js');
-
+var config = require('../server-config.json');
 /* GET home page. */
 router.get('/', function(req, res, next) {
     res.render('index', { title: 'Express', author: 'Ryan and Ben ROCKS' });
@@ -23,8 +23,11 @@ router.get('/:tournament', function(req, res) {
     res.json(test);
 });
 
-router.get('/matches', function(req, res) {
-    var matches = challonge.matches.index(global.serverConfig.tournaments[0]);
+router.get('/matches/:tournament', function(req, res) {
+    var matches = challonge.matches.index(req.params.tournament);
+    if(!matches.length) {
+	res.render('error', {});
+    }
     var trimmedMatches = [];
     for (matchIdx in matches) {
 	    var match = matches[matchIdx].match;
@@ -33,7 +36,8 @@ router.get('/matches', function(req, res) {
 	        round: match.round,
 	        player1_id: match.player1_id,
 	        player2_id: match.player2_id,
-	        identifier : match.identifier
+	        identifier : match.identifier,
+		state : match.state
 	    };
 	    trimmedMatches.push(trimmedMatch);
     }

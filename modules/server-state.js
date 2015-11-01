@@ -1,3 +1,3 @@
 module.exports = {
-    config : require('./../configuration.js'),
+    config : require('./../server-config.json'),
 };

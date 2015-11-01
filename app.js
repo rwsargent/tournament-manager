@@ -9,35 +9,30 @@ var mongoose = require('mongoose');
 // Set up server
 var setupFailed = false;
 
-/*var config = ('./modules/configuration')();
-
-mongoose.connect(config.mongodb_location, function(err, success) 
+var config = require('./server-config.json');
+mongoose.connect(config.mongodb_location, function(err, success) {
     if (err) {
         console.log(err);
         throw err;
     } else {
-        require("./scripts/database/init-db.js");
         console.log("successfully connected to the database");
+        require("./modules/database/init-db.js")();
     }
 });
 
-// Build the queue
-require('./scripts/database/create-queue.js')();*/
-
 var routes = require('./routes/index');
-var users = require('./routes/users');
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-// see if we can make json prettier
+// make json prettier
 app.set('json spaces', 2);
-//app.set('json replacer', replacer);
  
-// uncomment after placing oyur favicon in /public
+// uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
+
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -45,7 +40,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

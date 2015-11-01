@@ -21,7 +21,6 @@ var getCredentials = function() {
 exports.fetch = function(method, uri, params_prefix, params) { 
     // make params url-ified
     params_prefix = params_prefix || null;
-    var string = "super long string that deosn't really matter whatup";
     var urlParams = "";
     if (typeof params !== 'undefined') { 
 	    urlParams = "?" + paramify(params_prefix, params);

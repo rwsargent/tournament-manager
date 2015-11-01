@@ -1,0 +1,12 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    each module in header.scripts
+      script(src=module)
+  body
+    .header
+      block header
+    .main-content
+      block content

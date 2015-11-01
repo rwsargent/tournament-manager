@@ -1,11 +1,17 @@
 var Location = require('./../../models/location.js');
 var Match =  require('./../../models/match.js');
-var Participant = require('/../../models/participant.js');
+var Participant = require('../../models/participants.js');
 var serverState = require('./../server-state.js');
 var challonge = require('./../../scripts/challonge/challonge.js');
 
+var handleError = function(err) {
+    console.log(err);    
+}
+
 var handleSave = function(err) {
-    if(err) console.log(err);
+    if(err) {
+	handleError(err);    
+    }
 }
 
 module.exports = function() {
@@ -19,75 +25,86 @@ module.exports = function() {
         }
         return null;
     };
-    
-    self.mapTournamentNameToID = function() {
+
+    var loadIfNotPresent = function(model, loadFunction) {
+	model.count({}, function(err, count) {
+	    if(err) {
+		handleError(err);
+	    } else if (count) {
+		console.log(model.collection + " is already populated.");
+	    } else {
+		loadFunction();
+	    }
+	});
+    }
+
+    self.loadLocationsIntoDatabase = function() {
         for(tournamentIdx in serverState.config.tournaments) {
-            var tournament = serverState.config.tournament[tournamentIdx];
-            var challongeTournament = challonge.tournaments.index(tournament.name)[0].tournament;
-            tournament.id = challongeTournament.id;
-        }
-    };
-    
-    self.loadLocationsIntoDatabase() = function() {
-        for(tournamentIdx in serverState.config.tournaments) {
-            var tournament = serverState.config.tournament[tournamentIdx];
+            var tournament = serverState.config.tournaments[tournamentIdx];
+	    if(tournament.locations) {
+		console.log( tournament.name + " doesn't have any locations");
+	    }
             for(locationIdx in tournament.locations) {
                 var location = tournament.locations[locationIdx];
                 var locationObject = Location( {
                     name: location,
-                    currentMatch : -1
-                    tournamentName : tournament.name;
-                    tournamentId = tournament.id;
+                    currentMatch : -1,
+                    tournamentName : tournament.name,
+                    tournamentId : tournament.id 
                 });
                 locationObject.save(handleSave);
             }
         }
     };
     
-    self.loadMatchesIntoDatabase() = function() {
-        for (tourneyIdx in serverState.config.tournaments) {
-            var tourneyId = serverState.config.tournaments[tourneyIdx].id;
-            var matches = challonge.matches.index(tourneyId);
-            for (matchIdx in matches) {
-                var match = matches[matchIdx].match;
-                var matchObject = Match( {
-                    player1 
-                });
-            }
-        }
-        return tournaments;
+    self.loadMatchesIntoDatabase = function() {
+	for (tourneyIdx in serverState.config.tournaments) {
+	    var tournamentName = serverState.config.tournaments[tourneyIdx].name;
+	    var matches = challonge.matches.index(tournamentName);
+	    for (matchIdx in matches) {
+		var match = matches[matchIdx].match;
+		var matchObject = Match( {
+		    tournamentName : tournamentName,
+		    challongeMatchId : match.id,
+		    player1Challonge : match.player1_id,
+		    player2Challonge : match.player2_id,
+		    challongeIdentifier : match.identifier,
+		    round : match.round,
+		    state : match.state,
+		    winnerId : match.winner_id,
+		    loserId : match.loser_id,
+		    prereqMatchIds : match.prerequisite_match_ids_csv
+		});
+		matchObject.save(handleSave);
+	    }
+	}
     };
 
-    self.loadParticipants() {
-        for(tourneyIdx in serverState.config.tournaments) {
-            var tourney = serverState.config.tournaments[tourneyIdx];
-            self.participants = challonge.participants.index(tourney.name); // safe as member variable
-            for(partIdx in participants) {
-                var participant = participants[partIdx].participant;
-                var participantOjbect = Participant({
-                    challongeId : participant.id,
-                    name : participant.name,
-                    tournamentName : tourney.name
-                });
-                participant.save(handleSave);
-            }
-        }
+    self.loadParticipants = function() {
+	for(tourneyIdx in serverState.config.tournaments) {
+	    var tourney = serverState.config.tournaments[tourneyIdx];
+	    self.participants = challonge.participants.index(tourney.name); // self as member variable
+	    if (!self.participants.length) {
+		console.log(tourney.name + " doesn't have any participants yet!");
+	    }
+	    for(partIdx in self.participants) {
+		var participant = self.participants[partIdx].participant;
+		var participantObject = Participant({
+		    challongeId : participant.id,
+		    name : participant.name,
+		    tournamentName : tourney.name
+		});
+		participantObject.save(handleSave);
+	    }
+	}
     }
 
     self.init = function() {
-        self.mapTournamentNameToID();
-        self.loadLocationsIntoDatabase();
-        self.loadParticipants();
-        self.loadMatchesIntoDatabase();
+	loadIfNotPresent(Participant, self.loadParticipants);
+	loadIfNotPresent(Match, self.loadMatchesIntoDatabase);
+	loadIfNotPresent(Location, self.loadLocationsIntoDatabase);
     };
-    
-    Match.find({}, function(err, results) {
-        if (err) {
-            console.log(err);
-        } else {
-            if (results.length === 0 ){
-                self.init();
-            }
-        }
-    });
+
+    self.init();
+    return self;
 }

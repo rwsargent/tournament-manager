@@ -1,7 +1,7 @@
 var api = require('./api.js');
 
 exports.index = function(tournamentID) { 
-    return api.fetch_and_parse("GET", "tournaments/" + tournamentID + "/particpants");
+    return api.fetch_and_parse("GET", "tournaments/" + tournamentID + "/participants");
 };
 
 exports.create = function(tournament, name, params) { 

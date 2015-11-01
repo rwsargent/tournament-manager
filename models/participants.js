@@ -2,9 +2,10 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var participantSchema = new Schema({
-    challongeId : Number,
+    challongeId : {type : Number, index : true},
     name: String,
-    tournamentName : String
+    tournamentName : String,
+    phoneNumber : { type: String, default: ""}
 });
 
 module.exports = mongoose.model('participant', participantSchema);

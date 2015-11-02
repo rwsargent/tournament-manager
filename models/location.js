@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 var locationSchema = new Schema({
     name : String,
     currentMatch : Number,
-    tournamentName : String
+    tournaments : [String]
 });
 
 module.exports = mongoose.model('location', locationSchema);

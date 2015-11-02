@@ -10,6 +10,8 @@ var mongoose = require('mongoose');
 var setupFailed = false;
 
 var config = require('./server-config.json');
+require('./modules/location-registry.js').init();
+
 mongoose.connect(config.mongodb_location, function(err, success) {
     if (err) {
         console.log(err);

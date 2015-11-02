@@ -39,23 +39,18 @@ module.exports = function() {
     }
 
     self.loadLocationsIntoDatabase = function() {
-        for(tournamentIdx in serverState.config.tournaments) {
-            var tournament = serverState.config.tournaments[tournamentIdx];
-	    if(tournament.locations) {
-		console.log( tournament.name + " doesn't have any locations");
-	    }
-            for(locationIdx in tournament.locations) {
-                var location = tournament.locations[locationIdx];
-                var locationObject = Location( {
-                    name: location,
-                    currentMatch : -1,
-                    tournamentName : tournament.name,
-                    tournamentId : tournament.id 
-                });
-                locationObject.save(handleSave);
-            }
-        }
-    };
+	var locationRegistry = require('../location-registry.js');
+	for(lIdx in serverState.config.locations) {
+	    var location = serverState.config.locations[lIdx];
+	    var tourneys = locationRegistry.getTournamentsForLocations(location);
+            var locationObject = Location({
+                name: location,
+                currentMatch : -1,
+                tournaments : tourneys,
+            });
+            locationObject.save(handleSave);
+	}
+    }
     
     self.loadMatchesIntoDatabase = function() {
 	for (tourneyIdx in serverState.config.tournaments) {
@@ -107,4 +102,4 @@ module.exports = function() {
 
     self.init();
     return self;
-}
+};

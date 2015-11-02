@@ -11,7 +11,6 @@ var matchSchema = new Schema({
     challongeIdentifier : String,
     round: Number,
     state : String,
-    started : Date,
     winnerId : Number,
     loserId : Number,
     prereqMatchIds : {type: String, default : ""}

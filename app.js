@@ -11,6 +11,7 @@ var setupFailed = false;
 
 var config = require('./server-config.json');
 require('./modules/location-registry.js').init();
+require('./modules/tournament-registry.js').init();
 
 mongoose.connect(config.mongodb_location, function(err, success) {
     if (err) {

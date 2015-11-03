@@ -4,6 +4,7 @@ var challonge = require('../scripts/challonge/challonge.js');
 var Queue = require('../models/queue.js');
 var config = require('../server-config.json');
 /* GET home page. */
+
 router.get('/', function(req, res, next) {
     res.render('index', { title: 'Express', author: 'Ryan and Ben ROCKS' });
 });

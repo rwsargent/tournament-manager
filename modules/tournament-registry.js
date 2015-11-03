@@ -4,7 +4,7 @@ module.exports = {
     init : function() {
         for(tIdx in config.tournaments) {
             var tournament = config.tournaments[tIdx];
-            tournamentMap.tournament.name = tournament;
+	    tournamentMap[tournament.name] = tournament;
         }
     },
     getTournament : function(name) {

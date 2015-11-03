@@ -9,8 +9,8 @@ var credentials = {
 };
 
 exports.setCredentials = function(username, api_key) { 
-    credentials["user"] = username;
-    credentials["api_key"] = api_key;
+    credentials.user = username;
+    credentials.api_key = api_key;
 };
 
 var getCredentials = function() { 
@@ -31,7 +31,7 @@ exports.fetch = function(method, uri, params_prefix, params) {
     }
     var xmlhttpreq = new XMLHttpRequest();
     xmlhttpreq.responseType = "json";
-    xmlhttpreq.open(method, url, false, credentials["user"], credentials["api_key"]);
+    xmlhttpreq.open(method, url, false, credentials.user, credentials.api_key);
     try { 
 	    if (method === "GET") { 
 	        xmlhttpreq.send();
@@ -54,8 +54,8 @@ var paramify = function (dirty_params, prefix) {
     //tournament[tournament_type]=double+elimination&tournament[url]=test9url&tournament[name]=test8
     //tournament%5Btournament_type%5D=double+elimination&tournament%5Burl%5D=test9url&tournament%5Bname%5D=test8
     var paramString = "";
-    for (key in dirty_params) {
-	    var param = dirty_params[key]
+    for (var key in dirty_params) {
+	    var param = dirty_params[key];
 	    if (prefix) { 
 	        paramString += prefix + "[" + param[0] + "]" + "=" + param[1]; // tournament[type]=value
 	    } else { 

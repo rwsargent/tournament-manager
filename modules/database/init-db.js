@@ -6,18 +6,18 @@ var challonge = require('./../../scripts/challonge/challonge.js');
 
 var handleError = function(err) {
     console.log(err);    
-}
+};
 
 var handleSave = function(err) {
     if(err) {
 	    handleError(err);    
     }
-}
+};
 
 module.exports = function() {
     var self = this;
     var findParticipantById = function(id) {
-        for(idx in self.participants) {
+        for(var idx in self.participants) {
             var participant = self.participants[idx];
             if (participant.id === id) {
                 return participant;
@@ -31,16 +31,16 @@ module.exports = function() {
 	        if(err) {
 		        handleError(err);
 	        } else if (count) {
-		        console.log(model.collection + " is already populated.");
+		        console.log(model.collection.name + " is already populated.");
 	        } else {
 		        loadFunction();
 	        }
 	    });
-    }
+    };
 
     self.loadLocationsIntoDatabase = function() {
 	    var locationRegistry = require('../location-registry.js');
-	    for(lIdx in serverState.config.locations) {
+	    for( var lIdx in serverState.config.locations) {
 	        var location = serverState.config.locations[lIdx];
 	        var tourneys = locationRegistry.getTournamentsForLocations(location);
             var locationObject = Location({
@@ -50,13 +50,13 @@ module.exports = function() {
             });
             locationObject.save(handleSave);
 	    }
-    }
+    };
     
     self.loadMatchesIntoDatabase = function() {
-	    for (tourneyIdx in serverState.config.tournaments) {
+	    for (var tourneyIdx in serverState.config.tournaments) {
 	        var tournamentName = serverState.config.tournaments[tourneyIdx].name;
 	        var matches = challonge.matches.index(tournamentName);
-	        for (matchIdx in matches) {
+	        for (var matchIdx in matches) {
 		        var match = matches[matchIdx].match;
 		        var matchObject = Match( {
 		            tournamentName : tournamentName,
@@ -76,13 +76,13 @@ module.exports = function() {
     };
 
     self.loadParticipants = function() {
-	    for(tourneyIdx in serverState.config.tournaments) {
+	    for(var tourneyIdx in serverState.config.tournaments) {
 	        var tourney = serverState.config.tournaments[tourneyIdx];
 	        self.participants = challonge.participants.index(tourney.name); // self as member variable
 	        if (!self.participants.length) {
 		        console.log(tourney.name + " doesn't have any participants yet!");
 	        }
-	        for(partIdx in self.participants) {
+	        for(var partIdx in self.participants) {
 		        var participant = self.participants[partIdx].participant;
 		        var participantObject = Participant({
 		            challongeId : participant.id,
@@ -92,7 +92,7 @@ module.exports = function() {
 		        participantObject.save(handleSave);
 	        }
 	    }
-    }
+    };
 
     self.init = function() {
 	    loadIfNotPresent(Participant, self.loadParticipants);

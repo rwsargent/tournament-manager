@@ -20,6 +20,7 @@ mongoose.connect(config.mongodb_location, function(err, success) {
     } else {
         console.log("successfully connected to the database");
         require("./modules/database/init-db.js")();
+	require("./modules/database/fill-sets.js")();
     }
 });
 

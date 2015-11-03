@@ -18,8 +18,8 @@ exports.show = function(tournamentID) {
 };
 
 exports.update = function(tournamentID, params) { 
-    api.fetch("PUT", tString(tournamentID), "tournament", params) 
-}
+    api.fetch("PUT", tString(tournamentID), "tournament", params);
+};
 
 exports.destroy = function(tournamentID) { 
     api.fetch("DELETE", tString(tournamentID));

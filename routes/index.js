@@ -7,7 +7,19 @@ var Match = require('../models/match.js');
 var Set = require('../models/set.js');
 /* GET home page. */
 
-function setCallback() {
+function trimSets(sets) {
+    var trimmed = [];
+    for (var setsIdx in sets) {
+	var set = sets[setsIdx];
+	var prettySet = {
+	    tournament : set.tournament,
+	    match : set.match,
+	    location : set.location ? set.location : "",
+	    started : set.started
+	};
+	trimmed.push(prettySet);
+    }
+    return trimmed;
 }
 router.get('/', function(req, res, next) {
     res.render('index', { title: 'Express', author: 'Ryan and Ben ROCKS' });
@@ -49,34 +61,12 @@ router.get('/sets', function(req,res) {
 	} else {
 	    if(count) {
 		Set.find({}, function(err, sets) {
-		    var trimmed = [];
-		    for (var setsIdx in sets) {
-			var set = sets[setsIdx];
-			var prettySet = {
-			    tournament : set.tournament,
-			    match : set.match,
-			    location : set.location ? set.location : "",
-			    started : set.started
-			};
-			trimmed.push(prettySet);
-		    }
-		    res.json(trimmed);
+		    res.json(trimSets(sets));
 		});
 	    } else {
 		require('../modules/database/fill-sets.js')(function() {
 		    Set.find({}, function(err, sets) {
-			var trimmed = [];
-			for (var setsIdx in sets) {
-			    var set = sets[setsIdx];
-			    var prettySet = {
-				tournament : set.tournament,
-				match : set.match,
-				location : set.location ? set.location : "",
-				started : set.started
-			    };
-			    trimmed.push(prettySet);
-			}
-			res.json(trimmed);
+			res.json(trimSets(sets));
 		    });
 		});
 	    }
@@ -85,6 +75,23 @@ router.get('/sets', function(req,res) {
 });
 
 router.get('/sets/:tournament', function(req,res) {
+    query = { tournament : req.params.tournament };
+    Set.find(query, function(err, sets) {
+	if(err) {
+	    console.log(err);
+	}
+	if(!sets.length) {
+	    require('../modules/database/fill-sets.js')(function() {
+		Set.find(query, function(err, sets) {
+		    res.json(trimSets(sets));
+		});
+	    });
+	} else {
+	    Set.find(query, function(err, sets) {
+		res.json(trimSets(sets));
+	    });
+	}
+    });
 });
 
 

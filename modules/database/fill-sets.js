@@ -30,6 +30,7 @@ function makeSetWithLocation(match, matchList, index) {
 			player2 : match.player2Display
 		    },
 		    started : Date.now(),
+		    tournament : match.tournamentName,
 		    location : location.name
 		});
 		setObject.save(function(err) {
@@ -82,6 +83,7 @@ function makeSetPerTournament(matchList, index) {
 		    player1 : match.player1Display,
 		    player2 : match.player2Display
 		},
+		tournament : match.tournamentName,
 		started : Date.now(),
 		location : "BYOC"
 	    });

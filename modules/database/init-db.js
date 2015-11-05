@@ -3,6 +3,7 @@ var Match =  require('./../../models/match.js');
 var Participant = require('../../models/participants.js');
 var serverState = require('./../server-state.js');
 var challonge = require('./../../scripts/challonge/challonge.js');
+var playerRegistry = require('../player-registry.js');
 
 var handleError = function(err) {
     console.log(err);    
@@ -34,6 +35,7 @@ module.exports = function() {
 		        console.log(model.collection.name + " is already populated.");
 	        } else {
 		        loadFunction();
+		    console.log(model.collection.name + " loaded into the database");
 	        }
 	    });
     };
@@ -63,6 +65,8 @@ module.exports = function() {
 		            challongeMatchId : match.id,
 		            player1Challonge : match.player1_id,
 		            player2Challonge : match.player2_id,
+			    player1Display : playerRegistry.getName(match.player1_id),
+			    player2Display : playerRegistry.getName(match.player2_id),
 		            challongeIdentifier : match.identifier,
 		            round : match.round,
 		            state : match.state,

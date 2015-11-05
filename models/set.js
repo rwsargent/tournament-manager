@@ -2,9 +2,15 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var setSchema = new Schema({
-    match: {type : Schema.ObjectId, ref: 'match'},
+    tournament : String,
+    match: {
+	mongoid : Schema.ObjectId,
+	identifier : String,
+	player1 : String,
+	player2 : String
+    },
     started : Date,
-    location : { type : Schema.ObjectId, ref : 'location'}
+    location : String
 });
 
 module.exports = mongoose.model('set', setSchema);

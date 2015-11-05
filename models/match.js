@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var matchSchema = new Schema({
-    tournamentName : {type : String, index : true},
+    tournamentName : {type : String, index : true}, 
     challongeMatchId : {type :Number, index : true},
     player1Display : {type : String, default : "Unknown"},
     player2Display : {type : String, default : "Unknown"},

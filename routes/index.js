@@ -7,6 +7,8 @@ var Match = require('../models/match.js');
 var Set = require('../models/set.js');
 /* GET home page. */
 
+function setCallback() {
+}
 router.get('/', function(req, res, next) {
     res.render('index', { title: 'Express', author: 'Ryan and Ben ROCKS' });
 });
@@ -40,31 +42,51 @@ router.get('/matches/:tournament', function(req, res) {
 });
 
 router.get('/sets', function(req,res) {
-    Set.find({}, function(err, sets) {
-	var trimmed = [];
-	for (var setsIdx in sets) {
-	    var set = sets[setsIdx];
-	    var prettySet = {
-		tournament : set.match.tournamentName,
-		location : set.location ? set.location.name : "",
-		started : set.started
-	    };
-	    trimmed.push(prettySet);
+    Set.count({}, function(err, count) {
+	if(err) {
+	    console.log(err);
+	    res.send(501);
+	} else {
+	    if(count) {
+		Set.find({}, function(err, sets) {
+		    var trimmed = [];
+		    for (var setsIdx in sets) {
+			var set = sets[setsIdx];
+			var prettySet = {
+			    tournament : set.tournament,
+			    match : set.match,
+			    location : set.location ? set.location : "",
+			    started : set.started
+			};
+			trimmed.push(prettySet);
+		    }
+		    res.json(trimmed);
+		});
+	    } else {
+		require('../modules/database/fill-sets.js')(function() {
+		    Set.find({}, function(err, sets) {
+			var trimmed = [];
+			for (var setsIdx in sets) {
+			    var set = sets[setsIdx];
+			    var prettySet = {
+				tournament : set.tournament,
+				match : set.match,
+				location : set.location ? set.location : "",
+				started : set.started
+			    };
+			    trimmed.push(prettySet);
+			}
+			res.json(trimmed);
+		    });
+		});
+	    }
 	}
-	res.json(trimmed);
     });
 });
 
 router.get('/sets/:tournament', function(req,res) {
 });
 
-
-router.get('/queue', function(req, res) {
-    var q = Queue.find({}).sort({order : 1 }).exec( function(err, queue) {
-        if (err) throw err;
-        res.json(queue);
-    });
-});
 
 router.get('/tournament/index', function(req, res) {
     var tournaments = {};

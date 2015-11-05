@@ -12,6 +12,7 @@ var setupFailed = false;
 var config = require('./server-config.json');
 require('./modules/location-registry.js').init();
 require('./modules/tournament-registry.js').init();
+require('./modules/player-registry.js').init();
 
 mongoose.connect(config.mongodb_location, function(err, success) {
     if (err) {
@@ -20,7 +21,7 @@ mongoose.connect(config.mongodb_location, function(err, success) {
     } else {
         console.log("successfully connected to the database");
         require("./modules/database/init-db.js")();
-	require("./modules/database/fill-sets.js")();
+//	
     }
 });
 

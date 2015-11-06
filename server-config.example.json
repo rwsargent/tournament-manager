@@ -2,10 +2,10 @@
     "challonge_user" : "user",
     "challonge_apikey" : "",
     "mongodb_location" : "mongodb://localhost/tournament",
-    "locations" : []
+    "locations" : [],
     "tournaments": [
         {
-            "name" : "tournament Name!"
+            "name" : "tournament Name!",
             "locations" : []
         }],
 }

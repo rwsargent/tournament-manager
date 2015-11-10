@@ -58,6 +58,7 @@ module.exports = function() {
 	    for (var tourneyIdx in serverState.config.tournaments) {
 	        var tournamentName = serverState.config.tournaments[tourneyIdx].name;
 	        var matches = challonge.matches.index(tournamentName);
+            var finalRound = 0;
 	        for (var matchIdx in matches) {
 		        var match = matches[matchIdx].match;
 		        var matchObject = Match( {
@@ -65,8 +66,8 @@ module.exports = function() {
 		            challongeMatchId : match.id,
 		            player1Challonge : match.player1_id,
 		            player2Challonge : match.player2_id,
-			    player1Display : playerRegistry.getName(match.player1_id),
-			    player2Display : playerRegistry.getName(match.player2_id),
+			        player1Display : playerRegistry.getName(match.player1_id),
+			        player2Display : playerRegistry.getName(match.player2_id),
 		            challongeIdentifier : match.identifier,
 		            round : match.round,
 		            state : match.state,
@@ -75,6 +76,7 @@ module.exports = function() {
 		            prereqMatchIds : match.prerequisite_match_ids_csv
 		        });
 		        matchObject.save(handleSave);
+                finalRound = match.round > finalRound ? match.round : finalRound;
 	        }
 	    }
     };

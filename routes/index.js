@@ -10,14 +10,14 @@ var Set = require('../models/set.js');
 function trimSets(sets) {
     var trimmed = [];
     for (var setsIdx in sets) {
-	var set = sets[setsIdx];
-	var prettySet = {
-	    tournament : set.tournament,
-	    match : set.match,
-	    location : set.location ? set.location : "",
-	    started : set.started
-	};
-	trimmed.push(prettySet);
+	    var set = sets[setsIdx];
+	    var prettySet = {
+	        tournament : set.tournament,
+	        match : set.match,
+	        location : set.location ? set.location : "",
+	        started : set.started
+	    };
+	    trimmed.push(prettySet);
     }
     return trimmed;
 }
@@ -36,61 +36,61 @@ router.get('/:event/:tournament/matches', function(req, res) {
 router.get('/matches', function(req, res, next) {
     var query = {};
     if (req.params.tournament) {
-	query.tournamentName = req.params.tournament;
+	    query.tournamentName = req.params.tournament;
     }
     Match.find(query,function(err, matches) {
-	res.json(matches);
+	    res.json(matches);
     });
 });
 
 router.get('/matches/:tournament', function(req, res) {
     var query = {};
     if (req.params.tournament) {
-	query.tournamentName = req.params.tournament;
+	    query.tournamentName = req.params.tournament;
     }
     Match.find(query,function(err, matches) {
-	res.json(matches);
+	    res.json(matches);
     });
 });
 
 router.get('/sets', function(req,res) {
     Set.count({}, function(err, count) {
-	if(err) {
-	    console.log(err);
-	    res.send(501);
-	} else {
-	    if(count) {
-		Set.find({}, function(err, sets) {
-		    res.json(trimSets(sets));
-		});
+	    if(err) {
+	        console.log(err);
+	        res.send(501);
 	    } else {
-		require('../modules/database/fill-sets.js')(function() {
-		    Set.find({}, function(err, sets) {
-			res.json(trimSets(sets));
-		    });
-		});
+	        if(count) {
+		        Set.find({}, function(err, sets) {
+		            res.json(trimSets(sets));
+		        });
+	        } else {
+		        require('../modules/database/fill-sets.js')(function() {
+		            Set.find({}, function(err, sets) {
+			            res.json(trimSets(sets));
+		            });
+		        });
+	        }
 	    }
-	}
     });
 });
 
 router.get('/sets/:tournament', function(req,res) {
     query = { tournament : req.params.tournament };
     Set.find(query, function(err, sets) {
-	if(err) {
-	    console.log(err);
-	}
-	if(!sets.length) {
-	    require('../modules/database/fill-sets.js')(function() {
-		Set.find(query, function(err, sets) {
-		    res.json(trimSets(sets));
-		});
-	    });
-	} else {
-	    Set.find(query, function(err, sets) {
-		res.json(trimSets(sets));
-	    });
-	}
+	    if(err) {
+	        console.log(err);
+	    }
+	    if(!sets.length) {
+	        require('../modules/database/fill-sets.js')(function() {
+		        Set.find(query, function(err, sets) {
+		            res.json(trimSets(sets));
+		        });
+	        });
+	    } else {
+	        Set.find(query, function(err, sets) {
+		        res.json(trimSets(sets));
+	        });
+	    }
     });
 });
 
